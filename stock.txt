@@ -1,2 +1,3 @@
-Banana,F001,10,1
-Apple,F002,10,2
+Apple,F001,5,1
+Banana,F002,10,2
+Coconut,F003,20,5

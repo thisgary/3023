@@ -1,0 +1,57 @@
+'aesthetic purposes
+TextWindow.BackgroundColor = "blue"
+TextWindow.ForegroundColor = "white"
+TextWindow.Clear()
+
+'meta
+br = Text.GetCharacter(10) 'line break
+
+'low level split function
+s = "" 'input string
+d = "" 'delimeter
+Sub split
+  xs = "" 'init output
+  i = 1 'init index
+  t = s 'copy input
+  p = Text.GetIndexOf(t, d)
+  While (p > 0) 'iterate by delimeter
+    xs[i] = Text.GetSubText(t, 1, p-1)
+    i = i + 1
+    t = Text.GetSubTextToEnd(t, p+1) 'cut t
+    p = Text.GetIndexOf(t, d)
+  EndWhile
+  xs[i] = t 'last item
+EndSub
+'cite: https://social.msdn.microsoft.com/Forums/en-US/6c4894a8-2a1f-4ce7-94a9-6ec6dc74db78/smallbasic-split-function
+
+cname = "" 'target "csv" file name, depth=1
+Sub readc
+  'csv (fake) file read function
+  outc = "" 'flush output
+  
+  s = File.ReadContents(Program.Directory+"/"+fname)
+  d = br
+  split()
+  ys = xs
+ 
+  For j=1 to Array.GetItemCount(ys)
+    s = ys[j]
+    d = ","
+    split()
+    ys[j] = xs
+  EndFor
+  
+  outc = ys 'output output... huh.
+EndSub
+
+fname = "stock.txt"
+readc()
+stock = outc
+
+TextWindow.WriteLine(stock[2])
+
+fname = "order.txt"
+readc()
+order = outc
+
+TextWindow.WriteLine(order[2])
