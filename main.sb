@@ -6,6 +6,10 @@ TextWindow.Clear()
 'meta
 br = Text.GetCharacter(10) 'line break
 
+Sub break
+  TextWindow.Write(br)
+EndSub
+
 'low level split function
 s = "" 'input string
 d = "" 'delimeter
@@ -23,6 +27,63 @@ Sub split
   xs[i] = t 'last item
 EndSub
 'cite: https://social.msdn.microsoft.com/Forums/en-US/6c4894a8-2a1f-4ce7-94a9-6ec6dc74db78/smallbasic-split-function
+
+'item swap item low level function
+ls = "" 'input list
+a = 0
+b = 0
+Sub swap
+  tmp = ls[a]
+  ls[a] = ls[b]
+  ls[b] = tmp
+EndSub
+
+'string bubble sort by column
+col = 0 'column
+Sub sortStr
+  k = Array.GetItemCount(ls) 'array size
+  For i=1 To k-1 'will be k² slow
+    For j=i+1 To k
+      x = ls[i][col]
+      y = ls[j][col]
+      If (x <> y) Then 'not identical
+        c = 1
+        kx = 0
+        ky = 0
+        While (kx = ky)
+          kx = Text.GetCharacterCode(Text.GetSubText(x,c,1))
+          ky = Text.GetCharacterCode(Text.GetSubText(y,c,1))
+          c = c+1
+        EndWhile
+        If (kx > ky) Then
+          a = i
+          b = j
+          swap()
+        EndIf
+      Else
+        a = i + 1
+        b = j
+        swap()
+      EndIf
+    EndFor
+  EndFor
+EndSub
+
+'Sub sortStr but int
+Sub sortInt
+  k = Array.GetItemCount(ls) 
+  For i=1 To k-1 
+    For j=i+1 To k
+      x = ls[i][col]
+      y = ls[j][col]
+      If (x > y) Then ' "<" for descending
+        a = i
+        b = j
+        swap()
+      EndIf
+    EndFor
+  EndFor
+EndSub
 
 cname = "" 'target "csv" file name, depth=1
 Sub readc
@@ -48,10 +109,35 @@ fname = "stock.txt"
 readc()
 stock = outc
 
-TextWindow.WriteLine(stock[2])
+ls = stock
+col = 3
+sortStr()
+stock = ls
+
+stk = "1=Name;2=Code;3=Qty;4=Price"
+odr = "1=Date;2=Code;3=Qty"
+
+TextWindow.WriteLine("Stock")
+For i=1 To Array.GetItemCount(stock) 'sort stock by qty
+  For j=1 To Array.GetItemCount(stock[i])
+    TextWindow.WriteLine(stk[j]+": "+stock[i][j])
+  EndFor
+  break()
+EndFor
 
 fname = "order.txt"
 readc()
 order = outc
 
-TextWindow.WriteLine(order[2])
+ls = order
+col = 1
+sortStr()
+order = ls
+
+TextWindow.WriteLine("Order")
+For i=1 To Array.GetItemCount(order) 'sort order by date
+  For j=1 To Array.GetItemCount(order[i])
+    TextWindow.WriteLine(odr[j]+": "+order[i][j])
+  EndFor
+  break()
+EndFor
