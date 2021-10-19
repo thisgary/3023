@@ -17,6 +17,6 @@ First, these should be done:
 
 Then, these (sigh): 
 
-- sort order by date
+- sort order by date (100%)
 - stock left after order
 - critical stock

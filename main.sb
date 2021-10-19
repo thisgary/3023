@@ -46,9 +46,9 @@ EndSub
 
 'pseudo-csv file read function
 'usage: input "n"; output "ls"
-p = "" 'target file path
+name = "" 'target file name
 Sub readc
-  s = File.ReadContents(p)
+  s = File.ReadContents(Program.Directory+"/"+name)
   listc()
 EndSub
 
@@ -119,7 +119,7 @@ Sub list2D
   EndFor
 EndSub
 
-p = Program.Directory+"/stock.txt"
+name = "stock.txt"
 readc()
 stock = cs
 
@@ -130,23 +130,23 @@ sortStr()
 stock = ls
 
 'list stock
-title = "Stock"
-label = "1=Name;2=Code;3=Qty;4=Price"
-ms = stock
-list2D()
+'title = "Stock"
+'label = "1=Name;2=Code;3=Qty;4=Price"
+'ms = stock
+'list2D()
 
-'p = Program.Directory+"/order.txt"
-'readc()
-'order = cs
+name = "order.txt"
+readc()
+order = cs
 
 'sort order by date
-'ls = order
-'col = 1
-'sortStr()
-'order = ls
+ls = order
+col = 1
+sortStr()
+order = ls
 
 'list order
-'title = "Order"
-'label = "1=Date;2=Code;3=Qty"
-'ms = order
-'list2D()
+title = "Order"
+label = "1=Date;2=Code;3=Qty"
+ms = order
+list2D()
