@@ -5,6 +5,8 @@ TextWindow.Clear()
 
 'meta
 br = Text.GetCharacter(10) 'line break
+stockLabel = "1=Name;2=Code;3=Qty;4=Price"
+orderLabel = "1=Date;2=Code;3=Qty"
 
 Sub break
   TextWindow.Write(br)
@@ -104,25 +106,6 @@ Sub sortInt
   EndFor
 EndSub
 
-stock = ""
-order = ""
-Sub stockLeft
-  For i=1 To Array.GetItemCount(order)
-    code = order[i][2]
-    k = Array.GetItemCount(stock)
-    For j=1 To k
-      If code = stock[j][2] Then
-        stock[j][3] = stock[j][3] - order[i][3]
-        j = k 'break loop, blame sb
-      EndIf
-    EndFor
-  EndFor
-  title = "Stock Left"
-  label = "1=Name;2=Code;3=Qty;4=Price"
-  ms = stock 
-  list2D()
-EndSub
-
 'matrix dataset listing function
 'usage: input "title", "label", "ms"; output console
 title = ""
@@ -138,9 +121,52 @@ Sub list2D
   EndFor
 EndSub
 
+'usage: input "stock", "order"; output "leftover"
+stock = ""
+order = ""
+Sub stockLeft 'calculate stock left after order
+  leftover = stock
+  For i=1 To Array.GetItemCount(order)
+    code = order[i][2]
+    k = Array.GetItemCount(leftover)
+    For j=1 To k
+      If code = leftover[j][2] Then
+        leftover[j][3] = leftover[j][3] - order[i][3]
+        j = k 'break loop, blame sb
+      EndIf
+    EndFor
+  EndFor
+  title = "Leftover" 
+  label = "1=Name;2=Code;3=Qty;4=Price"
+  ms = leftover 
+  list2D()
+EndSub
+
+'check critical stock
+'assumption: neither "leftover" or "stock" is sorted again after stockLeft()
+leftover = ""
+Sub critStock
+  For i=1 To Array.GetItemCount(stock)
+    code = stock[i][2]
+    lStock = leftover[i][3]
+    cStock = Math.Round(stock[i][3]/3)
+    If lStock < 0 Then 'logically impossible
+      TextWindow.WriteLine(stock[i][1]+" quantum stockout")
+    ElseIf lStock < 1 Then
+      TextWindow.WriteLine(stock[i][1]+" stockout")
+    ElseIf lStock < cStock Then
+      TextWindow.WriteLine(stock[i][1]+" stockout soon")
+    EndIf
+  EndFor
+EndSub
+  
 name = "stock.txt"
 readc()
 stock = cs
+
+name = "order.txt"
+readc()
+order = cs
 
 'sort stock by code
 ls = stock
@@ -148,26 +174,11 @@ col = 2
 sortStr()
 stock = ls
 
-'list stock
-title = "Stock"
-label = "1=Name;2=Code;3=Qty;4=Price"
-ms = stock
-list2D()
-
-name = "order.txt"
-readc()
-order = cs
-
-''sort order by date
-'ls = order
-'col = 1
-'sortStr()
-'order = ls
-
-''list order
-'title = "Order"
-'label = "1=Date;2=Code;3=Qty"
-'ms = order
-'list2D()
+'sort order by date
+ls = order
+col = 1
+sortStr()
+order = ls
 
 stockLeft()
+critStock()
