@@ -54,7 +54,7 @@ Sub readc
   listc()
 EndSub
 
-'item swap item low level function
+'item swap low level function
 'usage: input "ls", "i", "j"; output "ls"
 ls = "" 'input list
 i = 0
@@ -146,18 +146,20 @@ EndSub
 'assumption: neither "leftover" or "stock" is sorted again after stockLeft()
 leftover = ""
 Sub critStock
+  TextWindow.WriteLine("Stock Checking...")
   For i=1 To Array.GetItemCount(stock)
     code = stock[i][2]
     lStock = leftover[i][3]
     cStock = Math.Round(stock[i][3]/3)
-    If lStock < 0 Then 'logically impossible
-      TextWindow.WriteLine(stock[i][1]+" quantum stockout")
-    ElseIf lStock < 1 Then
+    If lStock = 0 Then
       TextWindow.WriteLine(stock[i][1]+" stockout")
+    ElseIf lStock < 0 Then 'logically impossible, but whatever
+      TextWindow.WriteLine(stock[i][1]+" quantum stockout")
     ElseIf lStock < cStock Then
       TextWindow.WriteLine(stock[i][1]+" stockout soon")
     EndIf
   EndFor
+  break()
 EndSub
   
 name = "stock.txt"
