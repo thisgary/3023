@@ -1,0 +1,31 @@
+ls = "1=2"
+
+TextWindow.Write("Number: ")
+n = TextWindow.ReadNumber()
+
+'O(n^m)
+For i=2 To n
+  k = Array.GetItemCount(ls)
+  p = "true"
+  For j=1 To k 'iterate through prime list
+    'If Math.Remainder(i,ls[j])=0 Then
+    If i-(ls[j]*(i/ls[j]))=0 Then
+      p = "false" 'if divisible by prime, not prime
+      j = k 'break
+    EndIf
+  EndFor
+  If p Then
+    ls[k+1] = i
+  EndIf
+EndFor
+
+For i=1 To Array.GetItemCount(ls)
+  TextWindow.WriteLine(ls[i])
+EndFor
+
+'k = Array.GetItemCount(ls)
+'If n = ls[k] Then
+'  TextWindow.WriteLine(n + " is prime")
+'Else
+'  TextWindow.WriteLine(n + " is not prime")
+'EndIf 
