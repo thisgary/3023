@@ -1,3 +1,6 @@
+' Assignment 2
+' Prime number checker without using mathematical function.
+
 ls = "1=2"
 
 TextWindow.Write("Number: ")

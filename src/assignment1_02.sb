@@ -1,9 +1,11 @@
+' Assignment 1
+' Prime number checker and Prime list generator.
+
 ls = "1=2"
 
 TextWindow.Write("Number: ")
 n = TextWindow.ReadNumber()
 
-'O(n^m)
 For i=2 To n
   k = Array.GetItemCount(ls)
   p = "true"
@@ -19,13 +21,15 @@ For i=2 To n
   EndIf
 EndFor
 
-For i=1 To Array.GetItemCount(ls)
-  TextWindow.WriteLine(ls[i])
-EndFor
+' Prime checker
+k = Array.GetItemCount(ls)
+If n = ls[k] Then
+  TextWindow.WriteLine(n + " is prime")
+Else
+  TextWindow.WriteLine(n + " is not prime")
+EndIf 
 
-'k = Array.GetItemCount(ls)
-'If n = ls[k] Then
-'  TextWindow.WriteLine(n + " is prime")
-'Else
-'  TextWindow.WriteLine(n + " is not prime")
-'EndIf 
+' Prime list generator
+'For i=1 To Array.GetItemCount(ls)
+'  TextWindow.WriteLine(ls[i])
+'EndFor

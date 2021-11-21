@@ -161,14 +161,14 @@ Sub critStock
   EndFor
   break()
 EndSub
-  
-name = "stock.txt"
-readc()
-stock = cs
 
-name = "order.txt"
+name = "file1.txt"
 readc()
 order = cs
+
+name = "file2.txt"
+readc()
+stock = cs
 
 'sort stock by code
 ls = stock
