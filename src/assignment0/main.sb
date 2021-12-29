@@ -31,7 +31,7 @@ theme()
 
 'line break function (none -> none)
 BR = Text.GetCharacter(10) 'ascii equivalent for "\n" or "\r" idk
-Sub br
+Sub break
   TextWindow.Write(BR) 
   'TextWindow.WriteLine() 'alternatively
 EndSub
@@ -67,7 +67,7 @@ EndSub
 'input "s"; output "t"
 s = "" 'string
 Sub readcs 
-  'split string by line br
+  'split string by line break
   d = BR
   split()
   rs = ls 'rows
@@ -132,11 +132,11 @@ Sub swap
 EndSub
 
 'sort str by key function (table, str -> table)
-'input "t", "key"; output "t"
-t = "" 'table
+'input "table", "key"; output "t"
+table = "" 'table
 key = "" 'col label
 Sub sortStr
-  ls = t
+  ls = table
   k = Array.GetItemCount(t) 
   For i=1 To k-1 
     x = ls[i][key]
@@ -162,10 +162,10 @@ EndSub
 
 'sort num by key function (table, num -> table)
 'input "t", "key"; output "t"
-t = "" 'table
+table = "" 'table
 key = "" 'col label
 Sub sortNum
-  ls = t
+  ls = table
   k = Array.GetItemCount(t)
   For i=1 To k-1
     x = ls[i][key]
@@ -176,7 +176,7 @@ Sub sortNum
       EndIf
     EndFor
   EndFor
-  t = ls
+  table = ls
 EndSub
 
 '---------- SORTING DATA ----------
@@ -202,14 +202,14 @@ Sub printTable
   If (title <> "") then 
     TextWindow.WriteLine(title)
   EndIf
-  For i=1 To Array.GetItemCount(ms)
+  For i=1 To Array.GetItemCount(table)
     For j=1 To Array.GetItemCount(ls)
       l = ls[j]
-      TextWindow.WriteLine(l+": "+ms[i][l])
+      TextWindow.WriteLine(l+": "+table[i][l])
     EndFor
-    br()
+    break()
   EndFor
-  br()
+  break()
 EndSub
 
 'leftover check function (table, table -> none)
@@ -224,13 +224,13 @@ Sub checkLeft 'calculate stock left after order
     For j=1 To k
       If code = leftover[j]["Code"] Then
         leftover[j]["Qty"] = leftover[j]["Qty"] - order[i]["Qty"]
-        j = k 'br loop, blame sb
+        j = k 'break loop, blame sb
       EndIf
     EndFor
   EndFor
   title = "Leftover" 
   label = STOCK_LABEL
-  ms = leftover 
+  table = leftover 
   printTable()
 EndSub
 
@@ -251,7 +251,7 @@ Sub checkCrit
       TextWindow.WriteLine(stock[i]["Name"]+" stockout soon")
     EndIf
   EndFor
-  br()
+  break()
 EndSub
 
 '---------- SHOWING DATA ----------
@@ -268,13 +268,16 @@ keys = STOCK_LABEL
 readc()
 stock = table
 
+'display stock
+title = "Stock"
+table = stock
+printTable()
+
 'sort stock by code
 table = stock
 key = "Code"
 sortStr()
 stock = table
-
-TextWindow.WriteLine(stock)
 
 'sort order by date
 table = order
