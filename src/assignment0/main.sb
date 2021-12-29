@@ -29,7 +29,6 @@ Sub split
   EndWhile
   ls[i] = t 'last item
 EndSub
-'cite: https://social.msdn.microsoft.com/Forums/en-US/6c4894a8-2a1f-4ce7-94a9-6ec6dc74db78/smallbasic-split-function
 
 'pseudo-csv string -> list function
 'usage: input "s"; output "ls"
@@ -65,7 +64,7 @@ Sub swap
   ls[j] = _
 EndSub
 
-'string bubble sort *by column*
+'string sort *by column*
 'usage: input "ls", "c"; output "ls"
 col = 0 'column
 Sub sortStr
