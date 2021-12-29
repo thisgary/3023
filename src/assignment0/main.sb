@@ -2,12 +2,12 @@
 
 'none - no return value
 'str - string, lol
-'dict - dictionary (eg. d['key'] = 'value')
-'list - literal list, usually 1D otherwise mentioned
+'dict - dictionary, blame python (eg. d['key'] = 'value')
+'list - literal list, usually 1D otherwise specified
 'table - 1D dict list
 
 'LOW LEVEL - "There are lots of things you don't need to know" 
-'TOP LEVEL - meant to be used by end user
+'TOP LEVEL - meant for end user
 
 '---------- TERMINOLOGY ----------
 
