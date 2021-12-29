@@ -22,18 +22,17 @@ Sub theme
   'set font background and foreground color
   TextWindow.BackgroundColor = bg
   TextWindow.ForegroundColor = fg
-  'TextWindow.Clear() 'softlock
+  TextWindow.Clear()
 EndSub
 
 bg = "blue"
 fg = "white"
 theme()
-TextWindow.Clear() 'set console background color
 
 'line break function (none -> none)
-br = Text.GetCharacter(10) 'ascii equivalent for "\n" or "\r" idk
-Sub break
-  TextWindow.Write(br) 
+BR = Text.GetCharacter(10) 'ascii equivalent for "\n" or "\r" idk
+Sub br
+  TextWindow.Write(BR) 
   'TextWindow.WriteLine() 'alternatively
 EndSub
 
@@ -68,8 +67,8 @@ EndSub
 'input "s"; output "t"
 s = "" 'string
 Sub readcs 
-  'split string by line break
-  d = br
+  'split string by line br
+  d = BR
   split()
   rs = ls 'rows
   
@@ -87,13 +86,13 @@ EndSub
 t = ""
 ls = ""
 Sub toTable
-  t_ = ""
+  _ = ""
   For i=1 To Array.GetItemCount(t)
     For j=1 To Array.GetItemCount(ls)
-      t_[i][ls[j]] = t[i][j]
+      _[i][ls[j]] = t[i][j]
     EndFor
   EndFor
-  t = t_
+  t = _
 EndSub
 
 'TOP LEVEL
@@ -147,7 +146,7 @@ Sub sortStr
         c = 0
         cx = 0
         cy = 0
-        While (cx = cy)
+        While (cx = cy) 'compare string
           c = c + 1
           cx = Text.GetCharacterCode(Text.GetSubText(x,c,1))
           cy = Text.GetCharacterCode(Text.GetSubText(y,c,1))
@@ -172,7 +171,7 @@ Sub sortNum
     x = ls[i][key]
     For j=i+1 To k
       y = ls[j][key]
-      If (x > y) Then ' ascending
+      If (x > y) Then 'ascending
         swap()
       EndIf
     EndFor
@@ -208,9 +207,9 @@ Sub printTable
       l = ls[j]
       TextWindow.WriteLine(l+": "+ms[i][l])
     EndFor
-    break()
+    br()
   EndFor
-  break()
+  br()
 EndSub
 
 'leftover check function (table, table -> none)
@@ -225,7 +224,7 @@ Sub checkLeft 'calculate stock left after order
     For j=1 To k
       If code = leftover[j]["Code"] Then
         leftover[j]["Qty"] = leftover[j]["Qty"] - order[i]["Qty"]
-        j = k 'break loop, blame sb
+        j = k 'br loop, blame sb
       EndIf
     EndFor
   EndFor
@@ -252,12 +251,13 @@ Sub checkCrit
       TextWindow.WriteLine(stock[i]["Name"]+" stockout soon")
     EndIf
   EndFor
-  break()
+  br()
 EndSub
 
 '---------- SHOWING DATA ----------
 
 
+'read order and stock
 name = "file1.txt"
 keys = ORDER_LABEL
 readc()
@@ -269,18 +269,18 @@ readc()
 stock = table
 
 'sort stock by code
-t = stock
+table = stock
 key = "Code"
 sortStr()
-stock = t
+stock = table
 
 TextWindow.WriteLine(stock)
 
 'sort order by date
-t = order
+table = order
 key = "Date"
 sortStr()
-order = t
+order = table
 
 checkLeft()
 checkCrit()
