@@ -2,9 +2,9 @@
 
 ## Files
 
-`a.txt` - Fake customers order list.
+`file1.txt` - Fake customers order list.
 
-`b.txt` - Fake stock list.
+`file2.txt` - Fake stock list.
 
 ## TODO
 
