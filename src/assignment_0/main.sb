@@ -132,12 +132,12 @@ Sub swap
 EndSub
 
 'sort str by key function (table, str -> table)
-'input "table", "key"; output "t"
+'input "table", "key"; output "table"
 table = "" 'table
 key = "" 'col label
 Sub sortStr
   ls = table
-  k = Array.GetItemCount(t) 
+  k = Array.GetItemCount(table) 
   For i=1 To k-1 
     x = ls[i][key]
     For j=i+1 To k
@@ -157,16 +157,16 @@ Sub sortStr
       EndIf
     EndFor
   EndFor
-  t = ls
+  table = ls
 EndSub
 
 'sort num by key function (table, num -> table)
-'input "t", "key"; output "t"
+'input "table", "key"; output "table"
 table = "" 'table
 key = "" 'col label
 Sub sortNum
   ls = table
-  k = Array.GetItemCount(t)
+  k = Array.GetItemCount(table)
   For i=1 To k-1
     x = ls[i][key]
     For j=i+1 To k
@@ -185,8 +185,8 @@ EndSub
 '---------- SHOWING DATA ----------
 
 'CONSTANTS
-ORDER_LABEL = "1=Date;2=Code;3=Qty"
-STOCK_LABEL = "1=Name;2=Code;3=Qty;4=Price"
+SALES_LABEL = "1=SalesDate;2=ItemCode;3=Qty"
+ITEM_LABEL = "1=ItemName;2=ItemCode;3=Qty;4=PriceUnit"
 
 'TOP LEVEL
 
@@ -213,42 +213,42 @@ Sub printTable
 EndSub
 
 'leftover check function (table, table -> none)
-'input "stock", "order"; output "leftover"
-stock = ""
-order = ""
-Sub checkLeft 'calculate stock left after order
-  leftover = stock
-  For i=1 To Array.GetItemCount(order)
-    code = order[i]["Code"]
+'input "item", "sales"; output "leftover"
+item = ""
+sales = ""
+Sub checkLeft 'calculate item left after sales
+  leftover = item
+  For i=1 To Array.GetItemCount(sales)
+    code = sales[i]["ItemCode"]
     k = Array.GetItemCount(leftover)
     For j=1 To k
-      If code = leftover[j]["Code"] Then
-        leftover[j]["Qty"] = leftover[j]["Qty"] - order[i]["Qty"]
+      If code = leftover[j]["ItemCode"] Then
+        leftover[j]["Qty"] = leftover[j]["Qty"] - sales[i]["Qty"]
         j = k 'break loop, blame sb
       EndIf
     EndFor
   EndFor
-  title = "Leftover" 
-  label = STOCK_LABEL
+  title = "e. Items (Leftover)" 
+  label = ITEM_LABEL
   table = leftover 
   printTable()
 EndSub
 
-'critical stock check function (table -> none)
-'assumption: neither "leftover" or "stock" is sorted again after stockLeft()
+'critical item check function (table -> none)
+'assumption: neither "leftover" or "item" is sorted again after stockLeft()
 leftover = ""
 Sub checkCrit
-  TextWindow.WriteLine("Stock Checking...")
-  For i=1 To Array.GetItemCount(stock)
-    code = stock[i]["Code"]
+  TextWindow.WriteLine("item Checking...")
+  For i=1 To Array.GetItemCount(item)
+    code = item[i]["ItemCode"]
     lStock = leftover[i]["Qty"]
-    cStock = Math.Round(stock[i]["Qty"]/3)
+    cStock = Math.Round(item[i]["Qty"]/3)
     If lStock = 0 Then
-      TextWindow.WriteLine(stock[i]["Name"]+" stockout")
+      TextWindow.WriteLine(item[i]["Name"]+" stockout")
     ElseIf lStock < 0 Then 'logically impossible, but whatever
-      TextWindow.WriteLine(stock[i]["Name"]+" quantum stockout")
+      TextWindow.WriteLine(item[i]["Name"]+" quantum stockout")
     ElseIf lStock < cStock Then
-      TextWindow.WriteLine(stock[i]["Name"]+" stockout soon")
+      TextWindow.WriteLine(item[i]["Name"]+" stockout soon")
     EndIf
   EndFor
   break()
@@ -257,33 +257,91 @@ EndSub
 '---------- SHOWING DATA ----------
 
 
-'read order and stock
-name = "file1.txt"
-keys = ORDER_LABEL
+'a. Read both input files and store the information into the 2D-Array. Your Array format should be FILENAME[Numeric][String]
+name = "ITEMDATA.txt"
+keys = ITEM_LABEL
 readc()
-order = table
+item = table
 
-name = "file2.txt"
-keys = STOCK_LABEL
+name = "SALESDATA.txt"
+keys = SALES_LABEL
 readc()
-stock = table
+sales = table
 
-'display stock
-title = "Stock"
-table = stock
+
+'b. Sort ITEMDATA file according to the ITEMCODE field with ascending order
+table = item
+key = "ItemCode"
+sortStr() 
+item = table
+
+title = "b. Items (Sorted by Code)"
 printTable()
 
-'sort stock by code
-table = stock
-key = "Code"
-sortStr()
-stock = table
 
-'sort order by date
-table = order
-key = "Date"
+'c. Sort SALESDATA file according to the SALESDATE field with ascending order
+table = sales
+key = "SalesDate"
 sortStr()
-order = table
+sales = table
 
-checkLeft()
+title = "c. Sales (Sorted by Date)"
+printTable()
+
+
+'d. Generate a report to show the total sales for each Item
+table = sales
+key = "ItemCode"
+sortStr()
+sales = table
+
+k = Array.GetItemCount(sales)
+itemsales = ""
+For i=1 To k
+  code = sales[i]["ItemCode"]
+  if Array.ContainsIndex(itemsales, code) Then 
+    itemsales[code] = itemsales[code] + sales[i]["Qty"]
+  Else
+    itemsales[code] = sales[i]["Qty"]
+  EndIf
+EndFor
+
+TextWindow.WriteLine("d. Sales (Per item)")
+codes = Array.GetAllIndices(itemsales)
+For i=1 To Array.GetItemCount(codes)
+  TextWindow.WriteLine("ItemCode: " + codes[i])
+  TextWindow.WriteLine("SalesQty (total): " + itemsales[codes[i]])
+  TextWindow.Write(BR)
+EndFor
+TextWindow.Write(BR)
+
+
+'e. Generate a report to show the current stock balance
+checkLeft() 'line 219
 checkCrit()
+
+
+'f. Using ITEMCODE field search a record in ITEMDATA array
+userinput = ""
+While userinput <> "EXIT" 
+  TextWindow.Write("ItemCode? (input 'EXIT' to exit) ")
+  userinput = Text.ConvertToUpperCase(TextWindow.Read())
+  If userinput <> "EXIT" Then
+    found = 0
+    k = Array.GetItemCount(leftover)
+    For i=1 To k
+      If userinput = leftover[i]["Itemcode"] then
+        TextWindow.WriteLine("ItemName: " + leftover[i]["ItemName"])
+        TextWindow.WriteLine("ItemCode: " + leftover[i]["ItemCode"])
+        TextWindow.WriteLine("StockQty: " + leftover[i]["Qty"])
+        TextWindow.WriteLine("PriceUnit: " + leftover[i]["PriceUnit"])
+        TextWindow.Write(BR)
+        found = 1 
+        i = k
+      EndIf
+    EndFor
+    If found < 1 then
+      TextWindow.WriteLine("ItemCode not found.")
+    EndIf
+  EndIf
+EndWhile
